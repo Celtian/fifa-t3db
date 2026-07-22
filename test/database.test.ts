@@ -5,7 +5,7 @@ import { FifaDatabaseError, openEditableFifaDatabase, openFifaDatabase } from ".
 const databaseBytes = readFileSync(new URL("../example/fifa_ng_db.db", import.meta.url));
 const metadataXml = readFileSync(new URL("../example/fifa_ng_db-meta.xml", import.meta.url), "utf8");
 
-describe("FIFA 16 fixture", () => {
+describe("reference database fixture", () => {
   const database = openFifaDatabase({ database: databaseBytes, metadataXml });
 
   test("indexes the database header and all tables", () => {

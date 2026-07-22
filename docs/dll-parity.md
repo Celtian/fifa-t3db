@@ -1,6 +1,6 @@
 # FifaLibrary16.dll parity audit
 
-This audit covers the FIFA 16 PC t3db read/write path. It is anchored to:
+This audit covers the PC t3db format version 8 read/write path. It is anchored to:
 
 ```text
 FifaLibrary16.dll
@@ -32,7 +32,7 @@ The supplied fixture confirms 137 tables, 109,169 valid rows, all stored CRCs, b
 - `Table.Load` records an unpadded compressed CRC position, while `Table.Save` writes the CRC after eight-byte padding. The TypeScript reader follows the saved on-disk layout, fixing the DLL load-side metadata bug for lengths not divisible by eight.
 - The DLL truncates oversized fixed strings. The TypeScript editor rejects them, along with out-of-range numeric values, instead of silently losing data.
 - The DLL reads the long compressed length through a signed `Int16`. The TypeScript implementation treats the on-disk prefix as unsigned and supports the full declared two-byte range.
-- The DLL also supports Xbox byte order. This library deliberately accepts and writes only FIFA 16 PC databases.
+- The DLL also supports Xbox byte order. This library deliberately accepts and writes only the PC encoding of t3db format version 8.
 - Composite-key inference and immutable editor identities are API-level safeguards; they do not change the t3db binary field or record encoding.
 
 ## Confidence boundary

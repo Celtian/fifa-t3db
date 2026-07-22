@@ -1,6 +1,6 @@
 # Contributing
 
-Thank you for helping improve `fifa-t3db`. Contributions should preserve the library's strict validation, browser portability, and FIFA 16 PC binary compatibility.
+Thank you for helping improve `fifa-t3db`. Contributions should preserve the library's strict validation, browser portability, and PC t3db format version 8 compatibility.
 
 ## Before you start
 

@@ -8,7 +8,7 @@ All notable changes to this project will be documented in this file. The format 
 
 ### Added
 
-- Portable FIFA 16 PC t3db reader and editor.
+- Portable PC t3db format version 8 reader and editor.
 - Lazy table materialization for all supplied fixture tables.
 - Composite-key inference for updates, inserts, and deletions.
 - Deterministic Huffman reconstruction and FIFA CRC regeneration.

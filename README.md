@@ -2,7 +2,7 @@
 
 # ⚽ FIFA t3db
 
-**A portable, read-only-by-default TypeScript library for FIFA 16 PC databases.**
+**A portable, read-only-by-default TypeScript library for FIFA PC t3db databases.**
 
 [![TypeScript 6](https://img.shields.io/badge/TypeScript-6.0-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Bun 1.3.14](https://img.shields.io/badge/Bun-1.3.14-000000?logo=bun&logoColor=white)](https://bun.com/)
@@ -12,7 +12,7 @@
 
 </div>
 
-`fifa-t3db` reads and edits FIFA 16 PC `fifa_ng_db.db` files using their matching `fifa_ng_db-meta.xml` schemas. It supports all 137 tables in the supplied fixture, including packed numeric fields and Huffman-compressed UTF-8 strings.
+`fifa-t3db` reads and edits PC `fifa_ng_db.db` files that use t3db format version 8, together with their matching `fifa_ng_db-meta.xml` schemas. Game releases are not hard-coded: table and field layouts come from the supplied metadata. The library supports all 137 tables in the supplied fixture, including packed numeric fields and Huffman-compressed UTF-8 strings.
 
 The core library only accepts `Uint8Array` and XML text. It has no filesystem dependency, so the same API works in browsers, Bun, and Node.js.
 
@@ -144,7 +144,8 @@ Schema, header, table, field, row, key, and editor types are exported from the p
 
 ## ⚠️ Scope and limitations
 
-- Only the FIFA 16 PC signature and byte order are supported; Xbox byte order is rejected.
+- The PC encoding of t3db format version 8 is supported; Xbox byte order and other format versions are rejected.
+- Compatibility depends on a database using that format and being paired with its matching metadata XML; individual game releases are not identified or restricted by the API.
 - Metadata XML layouts are read but never rewritten.
 - The library intentionally provides no filesystem helpers, CLI, archive handling, or career-mode business logic.
 - Changed Huffman tables are logically equivalent to DLL output but are not guaranteed to be byte-identical.

@@ -1,4 +1,4 @@
-# FIFA 16 PC t3db format notes
+# PC t3db format version 8 notes
 
 These notes describe the read path verified against `FifaLibrary16.dll` and the fixture in `example/`.
 

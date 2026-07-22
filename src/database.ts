@@ -117,7 +117,7 @@ function parseHeader(binary: BinaryView): FifaDatabaseHeader {
 
   const platform = signature[4];
   if (platform !== PC_PLATFORM) {
-    throw new FifaDatabaseError(`Unsupported database platform ${String(platform)}; only FIFA 16 PC is supported`);
+    throw new FifaDatabaseError(`Unsupported database platform ${String(platform)}; only PC byte order is supported`);
   }
   if (signature[5] !== 0 || signature[6] !== 0 || signature[7] !== 0) {
     throw new FifaDatabaseError(`Malformed database signature padding: ${signature.map(hexByte).join(" ")}`);
