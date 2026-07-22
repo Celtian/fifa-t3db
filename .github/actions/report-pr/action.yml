@@ -1,0 +1,21 @@
+name: 📊 Report coverage to PR
+description: Add the Vitest coverage report to the pull request
+inputs:
+  summary-file:
+    description: Path to the Vitest JSON summary
+    required: false
+    default: coverage/coverage-summary.json
+  details-file:
+    description: Path to the Vitest per-file JSON report
+    required: false
+    default: coverage/coverage-final.json
+runs:
+  using: composite
+  steps:
+    - name: 📊 Create coverage report
+      uses: davelosert/vitest-coverage-report-action@v2
+      with:
+        json-summary-path: ${{ inputs.summary-file }}
+        json-final-path: ${{ inputs.details-file }}
+        vite-config-path: vitest.config.ts
+        file-coverage-mode: changes

@@ -1,0 +1,55 @@
+name: 🧪 Validate
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  validate:
+    name: 🛠️ Validate & Package
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🗜️ Checkout
+        uses: actions/checkout@v6
+
+      - name: 🟢 Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+          package-manager-cache: false
+
+      - name: 🥟 Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: .bun-version
+
+      - name: 🛠️ Install dependencies
+        uses: ./.github/actions/cached-deps
+
+      - name: ✅ Validate
+        run: bun run validate
+
+      - name: 📊 Report coverage
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+        uses: ./.github/actions/report-pr
+
+      - name: 📤 Upload coverage
+        uses: actions/upload-artifact@v7
+        with:
+          name: coverage
+          path: coverage
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: 📦 Verify package contents
+        working-directory: dist
+        run: bun pm pack --dry-run --ignore-scripts
+
+      - name: ⚽ Run fixture demo
+        run: bun run demo

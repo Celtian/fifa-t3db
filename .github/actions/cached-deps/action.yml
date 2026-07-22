@@ -1,0 +1,29 @@
+name: Get & Cache Dependencies
+description: Install Bun dependencies and optionally cache node_modules
+inputs:
+  caching:
+    description: Whether to cache dependencies
+    required: false
+    default: "true"
+runs:
+  using: composite
+  steps:
+    - name: 💾 Cache dependencies
+      if: inputs.caching == 'true'
+      id: cache
+      uses: actions/cache@v5
+      with:
+        path: node_modules
+        key: ${{ runner.os }}-${{ runner.arch }}-bun-${{ hashFiles('.bun-version', 'bun.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-${{ runner.arch }}-bun-
+
+    - name: 🛠️ Install dependencies
+      if: steps.cache.outputs.cache-hit != 'true' || inputs.caching != 'true'
+      run: bun install --frozen-lockfile
+      shell: bash
+
+    - name: 🪝 Restore lifecycle setup
+      if: steps.cache.outputs.cache-hit == 'true' && inputs.caching == 'true'
+      run: bun run prepare
+      shell: bash

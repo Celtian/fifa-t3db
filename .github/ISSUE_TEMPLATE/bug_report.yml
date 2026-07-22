@@ -1,0 +1,71 @@
+name: Bug report
+description: Report reproducible incorrect behavior or a malformed-input failure.
+title: "bug: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for reporting a problem. Do not attach proprietary databases or report security vulnerabilities here; follow SECURITY.md for private disclosure.
+  - type: input
+    id: version
+    attributes:
+      label: Package version
+      placeholder: 0.0.0
+    validations:
+      required: true
+  - type: input
+    id: runtime
+    attributes:
+      label: Runtime and version
+      description: Include Bun, Node.js, and browser or bundler versions that apply.
+      placeholder: Bun 1.3.14 on Linux x64
+    validations:
+      required: true
+  - type: dropdown
+    id: operation
+    attributes:
+      label: Affected operation
+      options:
+        - Opening metadata or database bytes
+        - Listing or reading tables
+        - Key inference
+        - Updating, inserting, or deleting rows
+        - Serialization or CRC validation
+        - Build, types, or browser bundling
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Minimal reproduction
+      description: Provide code and sanitized or synthetic input details sufficient to reproduce the problem.
+      render: typescript
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: Include the complete error message and relevant table, field, or offset information.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checks
+      options:
+        - label: I searched existing issues for this problem.
+          required: true
+        - label: I removed proprietary and personal data from this report.
+          required: true
+        - label: This is not a security vulnerability.
+          required: true

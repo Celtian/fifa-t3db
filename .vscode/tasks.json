@@ -1,0 +1,75 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "build",
+      "type": "shell",
+      "command": "bun",
+      "args": ["run", "build"],
+      "problemMatcher": ["$tsc"],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
+      "label": "demo",
+      "type": "shell",
+      "command": "bun",
+      "args": ["run", "demo"],
+      "problemMatcher": [],
+      "group": "none"
+    },
+    {
+      "label": "lint",
+      "type": "shell",
+      "command": "bun",
+      "args": ["run", "lint"],
+      "problemMatcher": ["$eslint-stylish"],
+      "group": "none"
+    },
+    {
+      "label": "lint:fix",
+      "type": "shell",
+      "command": "bun",
+      "args": ["run", "lint:fix"],
+      "problemMatcher": ["$eslint-stylish"],
+      "group": "none"
+    },
+    {
+      "label": "typecheck",
+      "type": "shell",
+      "command": "bun",
+      "args": ["run", "typecheck"],
+      "problemMatcher": ["$tsc"],
+      "group": "none"
+    },
+    {
+      "label": "test",
+      "type": "shell",
+      "command": "bun",
+      "args": ["run", "test"],
+      "problemMatcher": [],
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      }
+    },
+    {
+      "label": "test:coverage",
+      "type": "shell",
+      "command": "bun",
+      "args": ["run", "test:coverage"],
+      "problemMatcher": [],
+      "group": "test"
+    },
+    {
+      "label": "validate",
+      "type": "shell",
+      "command": "bun",
+      "args": ["run", "validate"],
+      "problemMatcher": [],
+      "group": "none"
+    }
+  ]
+}

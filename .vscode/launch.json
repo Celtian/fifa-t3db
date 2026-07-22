@@ -1,0 +1,14 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug leagues demo",
+      "type": "bun",
+      "request": "launch",
+      "program": "${workspaceFolder}/demo.ts",
+      "cwd": "${workspaceFolder}",
+      "stopOnEntry": false,
+      "watchMode": false
+    }
+  ]
+}

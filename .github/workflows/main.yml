@@ -1,0 +1,81 @@
+name: 🚀 Build & Publish
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  publish:
+    name: 📦 Validate & Publish
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🗜️ Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: 🔎 Verify tag targets master
+        run: test "$GITHUB_SHA" = "$(git rev-parse origin/master)"
+
+      - name: 🟢 Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+          package-manager-cache: false
+          registry-url: https://registry.npmjs.org
+
+      - name: 🥟 Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: .bun-version
+
+      - name: 🛠️ Install dependencies
+        uses: ./.github/actions/cached-deps
+        with:
+          caching: "false"
+
+      - name: 🔎 Verify package version
+        run: node -e "const packageJson = require('./package.json'); if (process.env.GITHUB_REF_NAME !== 'v' + packageJson.version) throw new Error('Tag must equal v' + packageJson.version)"
+
+      - name: ✅ Validate
+        run: bun run validate
+
+      - name: 📦 Verify package contents
+        working-directory: dist
+        run: bun pm pack --dry-run --ignore-scripts
+
+      - name: 🚀 Publish npm
+        if: contains(github.ref_name, 'beta') == false
+        run: npm publish --folder dist --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+
+      - name: 🚀 Publish npm beta
+        if: contains(github.ref_name, 'beta')
+        run: npm publish --folder dist --access public --tag beta
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+
+      - name: 🛠️ Prepare GitHub Packages manifest
+        if: contains(github.ref_name, 'beta') == false
+        run: bun run gpr:setup
+
+      - name: 🟢 Setup GitHub Packages
+        if: contains(github.ref_name, 'beta') == false
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+          package-manager-cache: false
+          registry-url: https://npm.pkg.github.com
+          scope: "@celtian"
+
+      - name: 🚀 Publish GitHub Packages
+        if: contains(github.ref_name, 'beta') == false
+        run: npm publish --folder dist
+        env:
+          NODE_AUTH_TOKEN: ${{ github.token }}

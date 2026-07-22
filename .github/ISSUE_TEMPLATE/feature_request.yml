@@ -1,0 +1,46 @@
+name: Feature request
+description: Propose an API, format, compatibility, or tooling improvement.
+title: "feat: "
+labels:
+  - enhancement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Explain the use case before prescribing an implementation. Large API changes and new database platforms should be discussed before code is written.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or use case
+      description: What cannot be accomplished safely or conveniently today?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: Describe the desired behavior and API from a caller's perspective.
+    validations:
+      required: true
+  - type: textarea
+    id: impact
+    attributes:
+      label: Compatibility impact
+      description: Note expected browser, metadata, binary-format, CRC, Huffman, or DLL-parity implications.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+    validations:
+      required: true
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checks
+      options:
+        - label: I searched existing issues and documentation for this request.
+          required: true
+        - label: This request fits the documented project scope, or explains why the scope should expand.
+          required: true
