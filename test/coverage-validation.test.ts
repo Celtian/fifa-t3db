@@ -16,7 +16,13 @@ describe("binary utility validation", () => {
 
   test("rejects invalid view lengths and byte ranges", () => {
     expect(() => new BinaryView(new Uint8Array(1), 2)).toThrow(/view length/i);
-    const binary = new BinaryView(new Uint8Array(4));
+    const bytes = new Uint8Array(8);
+    const view = new DataView(bytes.buffer);
+    view.setInt32(0, -123, true);
+    view.setFloat32(4, 1.25, true);
+    const binary = new BinaryView(bytes);
+    expect(binary.i32(0, "signed integer")).toBe(-123);
+    expect(binary.f32(4, "float")).toBe(1.25);
     expect(() => { binary.ensure(-1, 1, "negative offset"); }).toThrow(/exceeds database length/i);
     expect(() => { binary.ensure(0, Number.NaN, "invalid size"); }).toThrow(/exceeds database length/i);
     expect(formatOffset(-1)).toBe("-1");

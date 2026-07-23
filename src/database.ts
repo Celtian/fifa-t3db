@@ -322,28 +322,26 @@ function decodeRows(binary: BinaryView, table: InternalTable): readonly FifaRow[
 
   for (let recordIndex = 0; recordIndex < info.writtenRecordCount; recordIndex += 1) {
     const recordOffset = table.recordsOffset + recordIndex * info.recordSize;
-    const invalidFlag = binary.u8(
-      recordOffset + info.recordSize - 1,
-      `invalid flag for record ${String(recordIndex)} in table ${info.name}`,
-    );
+    // Table and field bounds were validated while parsing, so the hot row loop
+    // can read directly without rebuilding context strings for every value.
+    const invalidFlag = binary.view.getUint8(recordOffset + info.recordSize - 1);
     if ((invalidFlag & 0x80) !== 0) continue;
 
     const values = Array<FifaValue | undefined>(info.fieldCount);
     for (const field of table.fieldsByBitOffset) {
-      const context = `table ${info.name}, record ${String(recordIndex)}, field ${field.name} at ${formatOffset(recordOffset)}`;
       switch (field.storageType) {
         case 0:
-          values[field.schemaIndex] = decodeFixedString(binary, recordOffset, field, context);
+          values[field.schemaIndex] = decodeFixedString(binary, recordOffset, field);
           break;
         case 3:
-          values[field.schemaIndex] = decodeInteger(binary, recordOffset, field, context);
+          values[field.schemaIndex] = decodeInteger(binary, recordOffset, field);
           break;
         case 4:
-          values[field.schemaIndex] = binary.f32(recordOffset + field.bitOffset / 8, context);
+          values[field.schemaIndex] = binary.view.getFloat32(recordOffset + field.bitOffset / 8, true);
           break;
         case 13:
         case 14: {
-          const pointer = binary.i32(recordOffset + field.bitOffset / 8, context);
+          const pointer = binary.view.getInt32(recordOffset + field.bitOffset / 8, true);
           values[field.schemaIndex] = "";
           references.push({ field, pointer, values });
           break;
@@ -371,9 +369,9 @@ function decodeFixedString(
   binary: BinaryView,
   recordOffset: number,
   field: FifaFieldInfo,
-  context: string,
 ): string {
-  const bytes = binary.slice(recordOffset + field.bitOffset / 8, field.storageDepth / 8, context);
+  const start = recordOffset + field.bitOffset / 8;
+  const bytes = binary.bytes.subarray(start, start + field.storageDepth / 8);
   const nullIndex = bytes.indexOf(0);
   return utf8Decoder.decode(nullIndex === -1 ? bytes : bytes.subarray(0, nullIndex));
 }
@@ -382,15 +380,13 @@ function decodeInteger(
   binary: BinaryView,
   recordOffset: number,
   field: FifaFieldInfo,
-  context: string,
 ): number {
   const shift = field.bitOffset % 8;
   const firstByte = Math.floor(field.bitOffset / 8);
   const byteCount = Math.ceil((shift + field.storageDepth) / 8);
-  const bytes = binary.slice(recordOffset + firstByte, byteCount, context);
   let packed = 0;
-  for (let index = bytes.length - 1; index >= 0; index -= 1) {
-    packed = packed * 256 + requireValue(bytes[index], `missing packed byte ${String(index)}`);
+  for (let index = byteCount - 1; index >= 0; index -= 1) {
+    packed = packed * 256 + binary.view.getUint8(recordOffset + firstByte + index);
   }
   const encoded = Math.floor(packed / 2 ** shift) % 2 ** field.storageDepth;
   return encoded + field.rangeLow;
