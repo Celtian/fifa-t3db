@@ -51,13 +51,15 @@ jobs:
 
       - name: 🚀 Publish npm
         if: contains(github.ref_name, 'beta') == false
-        run: npm publish --folder dist --access public
+        working-directory: dist
+        run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
 
       - name: 🚀 Publish npm beta
         if: contains(github.ref_name, 'beta')
-        run: npm publish --folder dist --access public --tag beta
+        working-directory: dist
+        run: npm publish --access public --tag beta
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
 
@@ -76,6 +78,7 @@ jobs:
 
       - name: 🚀 Publish GitHub Packages
         if: contains(github.ref_name, 'beta') == false
-        run: npm publish --folder dist
+        working-directory: dist
+        run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ github.token }}

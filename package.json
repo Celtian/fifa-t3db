@@ -44,7 +44,7 @@
     "postversion": "git push && git push --follow-tags",
     "prepare-dist": "bun scripts/prepare-dist.ts",
     "gpr:setup": "bun scripts/gpr-setup.ts",
-    "publish:beta": "bun install --frozen-lockfile && bun run validate && npm publish --folder dist --tag beta",
+    "publish:beta": "bun install --frozen-lockfile && bun run validate && cd dist && npm publish --tag beta",
     "release:beta": "bun pm version prerelease --preid beta --message \"chore(update): prerelease %s β\"",
     "release:patch": "git checkout master && bun pm version patch --message \"chore(update): patch release %s 🐛\"",
     "release:minor": "git checkout master && bun pm version minor --message \"chore(update): release %s 🚀\"",
